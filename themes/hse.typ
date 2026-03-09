@@ -1,6 +1,18 @@
 // HSE Theme for Touying
 #import "../src/exports.typ": *
 
+#let get-lang(info) = {
+  if "lang" in info {
+    str(info.lang)
+  } else {
+    "ru"
+  }
+}
+
+#let t(info, ru, en) = {
+  if get-lang(info) == "en" { en } else { ru }
+}
+
 /// Default slide function for the presentation.
 #let slide(
   config: (:),
@@ -198,19 +210,19 @@
             #if "institution" in info and info.institution != none {
               info.institution
             } else {
-              [Факультет компьютерных наук]
+              t(info, [Факультет компьютерных наук], [Faculty of Computer Science])
             }
             \
             #if "program" in info and info.program != none {
               info.program
             } else {
-              [Образовательная программа «Программная инженерия»]
+              t(info, [Образовательная программа «Программная инженерия»], [Department of Software Engineering])
             }
             \
             #if "doc_type" in info and info.doc_type != none {
               info.doc_type
             } else {
-              [Выпускная квалификационная работа]
+              t(info, [Выпускная квалификационная работа], [])
             }
           ]
 
@@ -228,89 +240,105 @@
                 size: 18pt,
                 fill: self.colors.primary,
                 weight: "bold",
-                [ТЕМА ВКР НА РУССКОМ ЯЗЫКЕ],
+                t(info, [ТЕМА ВКР НА РУССКОМ ЯЗЫКЕ], [THESIS TITLE]),
               )
             }
-            #if "subtitle" in info and info.subtitle != none {
-              v(0.3em)
-              text(size: 18pt, fill: self.colors.primary, weight: "bold", info.subtitle)
-            } else {
-              v(0.3em)
-              text(size: 18pt, fill: self.colors.primary, weight: "bold", [ТЕМА ВКР НА АНГЛИЙСКОМ ЯЗЫКЕ])
+            #if get-lang(info) != "en" {
+              if "subtitle" in info and info.subtitle != none {
+                v(0.3em)
+                text(size: 18pt, fill: self.colors.primary, weight: "bold", info.subtitle)
+              } else {
+                v(0.3em)
+                text(size: 18pt, fill: self.colors.primary, weight: "bold", [ТЕМА ВКР НА АНГЛИЙСКОМ ЯЗЫКЕ])
+              }
             }
-            #if "type" in info and info.type != none {
-              v(2em)
-              text(size: 13.5pt, fill: self.colors.primary, weight: "bold", info.type)
-            } else {
-              v(2em)
-              text(size: 13.5pt, fill: self.colors.primary, weight: "bold", [ТИП ВКР])
+            #if get-lang(info) != "en" {
+              if "type" in info and info.type != none {
+                v(2em)
+                text(size: 13.5pt, fill: self.colors.primary, weight: "bold", info.type)
+              } else {
+                v(2em)
+                text(size: 13.5pt, fill: self.colors.primary, weight: "bold", t(info, [ТИП ВКР], [THESIS TYPE]))
+              }
             }
           ]
           v(2fr)
-
           place(bottom + center, dy: 0em)[
             #set text(fill: self.colors.primary, size: 12pt, weight: "bold")
-            #let city = if "city" in info and info.city != none { info.city } else { [Москва] }
+            #let city = if "city" in info and info.city != none { info.city } else { t(info, [Москва], [Moscow]) }
             #let year = if "year" in info and info.year != none { info.year } else { [2026] }
             #city, #year
           ]
           place(bottom + right, dx: 2em, dy: 0em)[
             #set text(fill: self.colors.primary, size: 12pt, weight: "bold")
             #set std.align(right)
+            #if get-lang(info) == "en" [
+              #if "author" in info and info.author != none {
+                text(fill: self.colors.primary)[#info.author]
+              } else {
+                text(fill: self.colors.primary)[Full Name]
+              }
+              \
+              #t(info, [Программная инженерия], [Software Engineering])
+              #h(0.5em)
+              #if "group" in info and info.group != none {
+                text(fill: self.colors.primary)[#info.group]
+              } else {
+                text(fill: self.colors.primary)[BSE123]
+              }
+            ] else [
+              #t(info, [Выполнил студент группы], [Done by the student of group])
+              #if "group" in info and info.group != none {
+                text(fill: self.colors.primary)[#info.group]
+              } else {
+                text(fill: self.colors.primary)[#t(info, [БПИXXX], [BSE123])]
+              }
+              #t(info, [образовательной программы], [of educational program])
+              #if "program_code" in info and info.program_code != none {
+                info.program_code
+              } else {
+                [00.00.00]
+              }
+              «#t(info, [Программная инженерия], [Software Engineering])»
+              \
+              #if "author" in info and info.author != none {
+                text(fill: self.colors.primary)[#info.author]
+              } else {
+                text(fill: self.colors.primary)[#t(info, [Фамилия Имя Отчество], [Full Name])]
+              }
+            ]
 
-            Выполнил студент группы
-            #if "group" in info and info.group != none {
-              text(fill: self.colors.primary)[#info.group]
-            } else {
-              text(fill: self.colors.primary)[БПИXXX]
-            }
-            \
-            образовательной программы
-            \
-            #if "program_code" in info and info.program_code != none {
-              info.program_code
-            } else {
-              [00.00.00]
-            }
-            «Программная инженерия»
-            \
-            #if "author" in info and info.author != none {
-              text(fill: self.colors.primary)[#info.author]
-            } else {
-              text(fill: self.colors.primary)[Фамилия Имя Отчество]
-            }
-
 
             \
-            Руководитель:
+            #t(info, [Руководитель:], [Supervisor:])
             \
             #if "supervisor_title" in info and info.supervisor_title != none {
               text(fill: self.colors.primary)[#info.supervisor_title ]
             } else {
-              text(fill: self.colors.primary)[ДОЛЖНОСТЬ, УЧЕНАЯ СТЕПЕНЬ ]
+              text(fill: self.colors.primary)[#t(info, [ДОЛЖНОСТЬ, УЧЕНАЯ СТЕПЕНЬ], [POSITION, ACADEMIC DEGREE]) ]
             }
             \
             #if "supervisor" in info and info.supervisor != none {
               text(fill: self.colors.primary)[#info.supervisor]
             } else {
-              text(fill: self.colors.primary)[ФИО]
+              text(fill: self.colors.primary)[#t(info, [ФИО], [Full Name])]
             }
             \
             #if "consultant_role" in info and info.consultant_role != none {
               info.consultant_role + ":"
             } else {
-              [Соруководитель / Консультант:]
+              t(info, [Соруководитель / Консультант:], [Co-supervisor / Consultant:])
             }
             \
             #if "consultant_title" in info and info.consultant_title != none {
               text(fill: self.colors.primary)[#info.consultant_title ]
             } else {
-              text(fill: self.colors.primary)[ДОЛЖНОСТЬ]
+              text(fill: self.colors.primary)[#t(info, [ДОЛЖНОСТЬ], [POSITION])]
             }
             #if "consultant" in info and info.consultant != none {
               text(fill: self.colors.primary)[#info.consultant]
             } else {
-              text(fill: self.colors.primary)[ФИО]
+              text(fill: self.colors.primary)[#t(info, [ФИО], [Full Name])]
             }
           ]
         },
@@ -368,6 +396,7 @@
   ),
   header-right: self => none,
   footer-a: self => {
+    let lang = get-lang(self.info)
     let prog-str = if self.info.keys().contains("short_program") and self.info.short_program != none {
       self.info.short_program
     } else {
@@ -378,10 +407,13 @@
     } else {
       "2026"
     }
-    let footer-str = "ФКН, ОП " + utils.markup-text(prog-str) + ", " + year-str
+    let inst-prefix = t(self.info, "ФКН", "FCS")
+    let prog-prefix = t(self.info, "ОП", "Program")
+    let footer-str = inst-prefix + ", " + prog-prefix + " " + utils.markup-text(prog-str) + ", " + year-str
     pad(left: 2em, footer-str)
   },
   footer-b: self => {
+    let lang = get-lang(self.info)
     let author-str = if self.info.keys().contains("short_author") and self.info.short_author != none {
       self.info.short_author
     } else {
@@ -389,8 +421,15 @@
     }
     let footer-str = ""
     if author-str != none { footer-str += utils.markup-text(author-str) }
-    if author-str != none and self.info.title != none { footer-str += ", ВКР «" }
-    if self.info.title != none { footer-str += utils.markup-text(self.info.title) + "»" }
+    if author-str != none and self.info.title != none {
+      footer-str += t(self.info, ", ВКР «", ", Thesis \"")
+    }
+    if self.info.title != none {
+      footer-str += utils.markup-text(self.info.title)
+      if author-str != none {
+        footer-str += t(self.info, "»", "\"")
+      }
+    }
     footer-str
   },
   footer-c: self => text(

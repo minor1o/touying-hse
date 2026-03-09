@@ -25,6 +25,7 @@
     consultant: [Фамиля Имя Отчество],
     city: [Москва],
     year: [2026],
+    lang: "ru",
     logo: image("logos/01_Logo_HSE_full_rus_CMYK_for_dark_1.svg"),
   ),
 )
