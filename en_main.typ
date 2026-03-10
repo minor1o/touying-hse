@@ -25,12 +25,13 @@
     city: [Moscow],
     year: [2026],
     lang: "en",
+    email: "your_email@edu.hse.ru",
     logo: image("logos/01_Logo_HSE_full_rus_CMYK_for_dark_1.svg"),
   ),
 )
 
-// Set heading numbering
-#set heading(numbering: "1.")
+// Set heading numbering for Level 1 only
+#set heading(numbering: (..n) => if n.pos().len() == 1 { numbering("1.", ..n) })
 
 // Title slide
 #title-slide()
@@ -185,3 +186,5 @@ Additional code listings
 = Appendix B: Screenshots
 
 Additional interface screenshots
+
+#final-slide()

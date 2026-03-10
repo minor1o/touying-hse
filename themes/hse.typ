@@ -312,17 +312,25 @@
             \
             #t(info, [Руководитель:], [Supervisor:])
             \
-            #if "supervisor_title" in info and info.supervisor_title != none {
-              text(fill: self.colors.primary)[#info.supervisor_title ]
-            } else {
-              text(fill: self.colors.primary)[#t(info, [ДОЛЖНОСТЬ, УЧЕНАЯ СТЕПЕНЬ], [POSITION, ACADEMIC DEGREE]) ]
-            }
-            \
-            #if "supervisor" in info and info.supervisor != none {
+            #let supervisor_name = if "supervisor" in info and info.supervisor != none {
               text(fill: self.colors.primary)[#info.supervisor]
             } else {
               text(fill: self.colors.primary)[#t(info, [ФИО], [Full Name])]
             }
+            #let supervisor_title = if "supervisor_title" in info and info.supervisor_title != none {
+              text(fill: self.colors.primary)[#info.supervisor_title ]
+            } else {
+              text(fill: self.colors.primary)[#t(info, [ДОЛЖНОСТЬ, УЧЕНАЯ СТЕПЕНЬ], [POSITION, ACADEMIC DEGREE]) ]
+            }
+            #if get-lang(info) == "en" [
+              #supervisor_name
+              \
+              #supervisor_title
+            ] else [
+              #supervisor_title
+              \
+              #supervisor_name
+            ]
             \
             #if "consultant_role" in info and info.consultant_role != none {
               info.consultant_role + ":"
@@ -330,16 +338,103 @@
               t(info, [Соруководитель / Консультант:], [Co-supervisor / Consultant:])
             }
             \
-            #if "consultant_title" in info and info.consultant_title != none {
-              text(fill: self.colors.primary)[#info.consultant_title ]
-            } else {
-              text(fill: self.colors.primary)[#t(info, [ДОЛЖНОСТЬ], [POSITION])]
-            }
-            #if "consultant" in info and info.consultant != none {
+            #let consultant_name = if "consultant" in info and info.consultant != none {
               text(fill: self.colors.primary)[#info.consultant]
             } else {
               text(fill: self.colors.primary)[#t(info, [ФИО], [Full Name])]
             }
+            #let consultant_title = if "consultant_title" in info and info.consultant_title != none {
+              text(fill: self.colors.primary)[#info.consultant_title ]
+            } else {
+              text(fill: self.colors.primary)[#t(info, [ДОЛЖНОСТЬ], [POSITION])]
+            }
+            #if get-lang(info) == "en" [
+              #consultant_name
+              \
+              #consultant_title
+            ] else [
+              #consultant_title
+              \
+              #consultant_name
+            ]
+
+          ]
+        },
+      ),
+    )
+  }
+
+  self = utils.merge-dicts(self, config-page(margin: 0em))
+  touying-slide(self: self, body)
+})
+
+
+/// Final slide for the presentation.
+#let final-slide(
+  config: (:),
+  email: none,
+  ..args,
+) = touying-slide-wrapper(self => {
+  self = utils.merge-dicts(
+    self,
+    config-common(freeze-slide-counter: true),
+    config,
+  )
+  let info = self.info + args.named()
+  let email = if email != none { email } else if "email" in info { info.email } else { none }
+
+  let body = {
+    grid(
+      columns: (630fr, 1930fr),
+      rows: 100%,
+      block(
+        width: 100%,
+        height: 100%,
+        fill: self.colors.primary,
+        inset: (top: 6.58pt, left: 0pt, right: 0pt),
+        {
+          if info.logo != none {
+            set image(width: 85.5pt, fit: "contain")
+            std.align(center, info.logo)
+          }
+        },
+      ),
+      block(
+        width: 100%,
+        height: 100%,
+        fill: white,
+        inset: (top: 1.5em, bottom: 2em, left: 4em, right: 3em),
+        {
+          std.align(center + horizon)[
+            #set text(fill: self.colors.primary, weight: "bold")
+            #text(size: 28pt)[
+              #t(info, [Спасибо за внимание], [Thank you for your attention!])
+            ]
+
+            #v(3em)
+
+            #text(size: 18pt)[
+              #if "author" in info and info.author != none {
+                underline(info.author)
+              }
+
+              #v(0.8em)
+              #if "title" in info and info.title != none {
+                info.title
+              }
+
+              #v(1.5em)
+              #if email != none {
+                underline(email)
+              }
+            ]
+          ]
+
+          place(bottom + center, dy: 0em)[
+            #set text(fill: self.colors.primary, size: 22pt, weight: "bold")
+            #let city = if "city" in info and info.city != none { info.city } else { t(info, [Москва], [Moscow]) }
+            #let year = if "year" in info and info.year != none { info.year } else { [2026] }
+            #city, #year
           ]
         },
       ),

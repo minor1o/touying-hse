@@ -30,8 +30,8 @@
   ),
 )
 
-// Set heading numbering
-#set heading(numbering: "1.")
+// Set heading numbering for Level 1 only
+#set heading(numbering: (..n) => if n.pos().len() == 1 { numbering("1.", ..n) })
 
 // Title slide
 #title-slide()
@@ -186,3 +186,5 @@ def main():
 = Приложение Б: Скриншоты
 
 Дополнительные скриншоты интерфейса
+
+#final-slide()
