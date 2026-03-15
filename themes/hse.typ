@@ -254,7 +254,7 @@
             }
             #if get-lang(info) != "en" {
               if "type" in info and info.type != none {
-                v(2em)
+                v(0.5em)
                 text(size: 13.5pt, fill: self.colors.primary, weight: "bold", info.type)
               } else {
                 v(2em)
@@ -293,7 +293,9 @@
               } else {
                 text(fill: self.colors.primary)[#t(info, [БПИXXX], [BSE123])]
               }
+              \
               #t(info, [образовательной программы], [of educational program])
+              \
               #if "program_code" in info and info.program_code != none {
                 info.program_code
               } else {
@@ -308,8 +310,6 @@
               }
             ]
 
-
-            \
             #t(info, [Руководитель:], [Supervisor:])
             \
             #let supervisor_name = if "supervisor" in info and info.supervisor != none {
@@ -331,7 +331,8 @@
               \
               #supervisor_name
             ]
-            \
+            
+
             #if "consultant_role" in info and info.consultant_role != none {
               info.consultant_role + ":"
             } else {
