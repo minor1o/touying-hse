@@ -452,21 +452,23 @@
 /// - English: "Bibliography"
 /// - Russian: "Список использованных источников"
 ///
-/// - path (str): Path to the .bib file.
+/// - bib (str, content): Path to the .bib file or a bibliography element.
 /// - full (bool): Whether to include all bibliography entries. Default is `true`.
 /// - style (str, auto): Citation style. Default is `auto`.
-#let bibliography-slide(path, full: true, style: auto, ..args) = {
-  context if text.lang == "en" [
-    = Bibliography
-  ] else [
-    = Список использованных источников
-  ]
-  if style == auto {
-    bibliography(path, title: none, full: full, ..args)
-  } else {
-    bibliography(path, title: none, full: full, style: style, ..args)
+#let bibliography-slide(bib, full: true, style: auto) = slide(
+  config: config-store(header: self => t(self.info, [Список использованных источников], [Bibliography])),
+  align: top + left,
+)[
+  #context {
+    let bib-title = if text.lang == "en" { [Bibliography] } else { [Список использованных источников] }
+    place(hide(heading(level: 1, bib-title, outlined: true, bookmarked: true)))
   }
-}
+  #if type(bib) == str {
+    bibliography(bib, title: none, full: full, style: style)
+  } else {
+    bib
+  }
+]
 
 
 /// New section slide for the presentation.
