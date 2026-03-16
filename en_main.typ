@@ -173,10 +173,7 @@ During the implementation of the graduation thesis, the following results were a
 Directions for further development:
 
 
-= References
-
-// #bibliography("references.bib")
-
+// #bibliography-slide("references.bib")
 
 
 = Appendix A: Listings

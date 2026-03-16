@@ -331,7 +331,7 @@
               \
               #supervisor_name
             ]
-            
+
 
             #if "consultant_role" in info and info.consultant_role != none {
               info.consultant_role + ":"
@@ -447,6 +447,28 @@
 })
 
 
+/// Bibliography slide for the presentation.
+/// Renders the section heading in the correct language:
+/// - English: "Bibliography"
+/// - Russian: "Список использованных источников"
+///
+/// - path (str): Path to the .bib file.
+/// - full (bool): Whether to include all bibliography entries. Default is `true`.
+/// - style (str, auto): Citation style. Default is `auto`.
+#let bibliography-slide(path, full: true, style: auto, ..args) = {
+  context if text.lang == "en" [
+    = Bibliography
+  ] else [
+    = Список использованных источников
+  ]
+  if style == auto {
+    bibliography(path, title: none, full: full, ..args)
+  } else {
+    bibliography(path, title: none, full: full, style: style, ..args)
+  }
+}
+
+
 /// New section slide for the presentation.
 #let new-section-slide(config: (:), body) = touying-slide-wrapper(self => {
   let slide-body = [
@@ -534,7 +556,7 @@
     fill: self.colors.primary,
     context utils.slide-counter.display(),
   ),
-  footer-columns: (auto, auto, auto),
+  footer-columns: (auto, 50%, auto),
   progress-bar: false,
   primary: cmyk(100%, 80%, 0%, 40%),
   secondary: cmyk(95%, 75%, 0%, 0%),

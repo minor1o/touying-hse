@@ -173,10 +173,7 @@ def main():
 Направления дальнейшего развития:
 
 
-= Список источников
-
-// #bibliography("references.bib")
-
+// #bibliography-slide("references.bib")
 
 
 = Приложение А: Листинги
