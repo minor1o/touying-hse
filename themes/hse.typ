@@ -455,19 +455,11 @@
 /// - bib (str, content): Path to the .bib file or a bibliography element.
 /// - full (bool): Whether to include all bibliography entries. Default is `true`.
 /// - style (str, auto): Citation style. Default is `auto`.
-#let bibliography-slide(bib, full: true, style: auto) = slide(
-  config: config-store(header: self => t(self.info, [Список использованных источников], [Bibliography])),
+#let bibliography-slide(bib) = slide(
+  config: config-store(header: self => t(self.info, [Список источников], [Bibliography])),
   align: top + left,
 )[
-  #context {
-    let bib-title = if text.lang == "en" { [Bibliography] } else { [Список использованных источников] }
-    place(hide(heading(level: 1, bib-title, outlined: true, bookmarked: true)))
-  }
-  #if type(bib) == str {
-    bibliography(bib, title: none, full: full, style: style)
-  } else {
-    bib
-  }
+  #bib
 ]
 
 
@@ -586,7 +578,7 @@
     ),
     config-methods(
       init: (self: none, body) => {
-        set text(font: "HSE Sans", size: 14pt, fill: self.colors.primary)
+        set text(font: "HSE Sans", size: 14pt, fill: self.colors.primary, lang: get-lang(self.info))
         show heading: set text(fill: self.colors.primary)
         show strong: set text(fill: self.colors.secondary)
         body
